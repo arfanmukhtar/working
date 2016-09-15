@@ -12,15 +12,15 @@ class VerifyCsrfToken extends BaseVerifier
      * @var array
      */
     protected $except = [
-        "feature/delete",
-        "agents/delete",
-        "feature/get",
-        "agents/get",
-        "category/get",
-        "category/delete",
-        "property/fileupload",
-        "property/addTofeatured",
-        "property/addToArchive",
-        "send_request"
+        'feature/delete',
+        'agents/delete',
+        'feature/get',
+        'agents/get',
+        'category/get',
+        'category/delete',
+        'property/fileupload',
+        'property/addTofeatured',
+        'property/addToArchive',
+        'send_request',
     ];
 }

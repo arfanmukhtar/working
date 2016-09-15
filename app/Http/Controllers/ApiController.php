@@ -2,13 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-
-use App\Http\Requests;
-use Response;
-use App\property;
 use App\Agent;
-use Validator;
+use App\property;
+use Response;
 
 class ApiController extends Controller
 {
@@ -17,70 +13,71 @@ class ApiController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index() {
-        $properties = property::orderBy("id" , "DESC")->get();
-		 if ($property) {
-        return Response::json(array(
+    public function index()
+    {
+        $properties = property::orderBy('id', 'DESC')->get();
+        if ($property) {
+            return Response::json([
                     'status' => true,
-                    'data' => $properties
-                        ), 200);
-		} else {
-            return Response::json(array(
+                    'data'   => $properties,
+                        ], 200);
+        } else {
+            return Response::json([
                         'error' => [
-                            'message' => "Something wrong with your Information"
-                        ]
-                            ), 404);
-        }
-    }
-	
-	public function featured() {
-        $properties = property::where("featured" , 1)->orderBy("id" , "DESC")->get();
-		 if ($property) {
-        return Response::json(array(
-                    'status' => true,
-                    'data' => $properties
-                        ), 200);
-		} else {
-            return Response::json(array(
-                        'error' => [
-                            'message' => "Something wrong with your Information"
-                        ]
-                            ), 404);
-        }
-    }
-	
-	public function detail($id) {
-        $property = property::where("id" , $id)->first();
-		 if ($property) {
-        return Response::json(array(
-                    'status' => true,
-                    'data' => $property
-                        ), 200);
-		} else {
-            return Response::json(array(
-                        'error' => [
-                            'message' => "Something wrong with your Information"
-                        ]
-                            ), 404);
-        }
-    }
-	
-	
-	public function agents() {
-        $agents = Agent::get();
-		 if ($property) {
-        return Response::json(array(
-                    'status' => true,
-                    'data' => $agents
-                        ), 200);
-		} else {
-            return Response::json(array(
-                        'error' => [
-                            'message' => "Something wrong with your Information"
-                        ]
-                            ), 404);
+                            'message' => 'Something wrong with your Information',
+                        ],
+                            ], 404);
         }
     }
 
-    
+    public function featured()
+    {
+        $properties = property::where('featured', 1)->orderBy('id', 'DESC')->get();
+        if ($property) {
+            return Response::json([
+                    'status' => true,
+                    'data'   => $properties,
+                        ], 200);
+        } else {
+            return Response::json([
+                        'error' => [
+                            'message' => 'Something wrong with your Information',
+                        ],
+                            ], 404);
+        }
+    }
+
+    public function detail($id)
+    {
+        $property = property::where('id', $id)->first();
+        if ($property) {
+            return Response::json([
+                    'status' => true,
+                    'data'   => $property,
+                        ], 200);
+        } else {
+            return Response::json([
+                        'error' => [
+                            'message' => 'Something wrong with your Information',
+                        ],
+                            ], 404);
+        }
+    }
+
+    public function agents()
+    {
+        $agents = Agent::get();
+        if ($property) {
+            return Response::json([
+                    'status' => true,
+                    'data'   => $agents,
+                        ], 200);
+        } else {
+            return Response::json([
+                        'error' => [
+                            'message' => 'Something wrong with your Information',
+                        ],
+                            ], 404);
+        }
+    }
 }
