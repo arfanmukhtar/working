@@ -2,15 +2,13 @@
 
 namespace App\Http\Controllers\Auth;
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use App\User;
 use Auth;
-use Validator;
-use App\Http\Controllers\Controller;
-use Illuminate\Contracts\Auth\Guard;
-use App\Services\Registrar;
-use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
+use Illuminate\Foundation\Auth\ThrottlesLogins;
+use Illuminate\Http\Request;
+use Validator;
 
 class AuthController extends Controller
 {
@@ -33,12 +31,11 @@ class AuthController extends Controller
      * @var string
      */
     protected $redirectTo = '/dashboard';
-	protected $loginPath = '/login';
-	 protected $redirectAfterLogout = '/login';
-	 
-	  protected $maxLoginAttempts = 5; // Amount of bad attempts user can make
-	  protected $lockoutTime = 100;
-	  
+    protected $loginPath = '/login';
+    protected $redirectAfterLogout = '/login';
+
+    protected $maxLoginAttempts = 5; // Amount of bad attempts user can make
+      protected $lockoutTime = 100;
 
     /**
      * Create a new authentication controller instance.
@@ -53,89 +50,84 @@ class AuthController extends Controller
     /**
      * Get a validator for an incoming registration request.
      *
-     * @param  array  $data
+     * @param array $data
+     *
      * @return \Illuminate\Contracts\Validation\Validator
      */
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'name' => 'required|max:255',
-            'email' => 'required|email|max:255|unique:users',
+            'name'     => 'required|max:255',
+            'email'    => 'required|email|max:255|unique:users',
             'password' => 'required|min:6|confirmed',
         ]);
     }
-	
-	
 
-	
-	public function login(Request $request)
-	{
-		/*$captcha = $request->input("g-recaptcha-response");
-		 $secret = getenv('CAPTCHA_SECRET');
-		//get verify response data
-		$verifyResponse = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret="'.$secret.'"&response='.$captcha);
-		$responseData = json_decode($verifyResponse);
-		//print_r($responseData); exit;
-		if(!$responseData->success){
-			return redirect('/login')->withErrors([
-				'error' => 'Robot verification failed, please try again.',
-			]);
-		} */
-	
+    public function login(Request $request)
+    {
+        /*$captcha = $request->input("g-recaptcha-response");
+         $secret = getenv('CAPTCHA_SECRET');
+        //get verify response data
+        $verifyResponse = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret="'.$secret.'"&response='.$captcha);
+        $responseData = json_decode($verifyResponse);
+        //print_r($responseData); exit;
+        if(!$responseData->success){
+            return redirect('/login')->withErrors([
+                'error' => 'Robot verification failed, please try again.',
+            ]);
+        } */
 
-		//print_r($request->all());exit;
-		$field = filter_var($request->input('email'), FILTER_VALIDATE_INT) ? 'ID_Number' : 'email';
-		$request->merge([$field => $request->input('email')]);
 
-		if (Auth::attempt($request->only($field, 'password')))
-		{
-			
-			$user = User::find(Auth::user()->id);
-			
-			if($user->status == 1) { 
-				$this->logout();
-			}
-			//$user->is_online = 1; 
-			//$user->last_login = date("Y-m-d h:i:s"); 
-			//$user->save();
-			
-			/*if(!empty($user->google2fa_secret)) {
-				Session::put("2faverify" , false);
-				return redirect('/twofactor');
-			} 
-			Session::put("2faverify" , true);*/
-			return redirect('/dashboard'); 
-			
-		}
-		
-	   $throttles = $this->isUsingThrottlesLoginsTrait();
+        //print_r($request->all());exit;
+        $field = filter_var($request->input('email'), FILTER_VALIDATE_INT) ? 'ID_Number' : 'email';
+        $request->merge([$field => $request->input('email')]);
 
-       if ($throttles && $this->hasTooManyLoginAttempts($request)) {
-           return $this->sendLockoutResponse($request);
-       }
-	   
-	   if ($throttles) {
-           $this->incrementLoginAttempts($request);
-       }
-	   
-		
-		return redirect('/login')->withErrors([
-			'error' => 'These credentials do not match our records.',
-		]);
-	} 
-	
+        if (Auth::attempt($request->only($field, 'password'))) {
+            $user = User::find(Auth::user()->id);
+
+            if ($user->status == 1) {
+                $this->logout();
+            }
+            //$user->is_online = 1;
+            //$user->last_login = date("Y-m-d h:i:s");
+            //$user->save();
+
+            /*if(!empty($user->google2fa_secret)) {
+                Session::put("2faverify" , false);
+                return redirect('/twofactor');
+            }
+            Session::put("2faverify" , true);*/
+            return redirect('/dashboard');
+        }
+
+        $throttles = $this->isUsingThrottlesLoginsTrait();
+
+        if ($throttles && $this->hasTooManyLoginAttempts($request)) {
+            return $this->sendLockoutResponse($request);
+        }
+
+        if ($throttles) {
+            $this->incrementLoginAttempts($request);
+        }
+
+
+        return redirect('/login')->withErrors([
+            'error' => 'These credentials do not match our records.',
+        ]);
+    }
 
     /**
      * Create a new user instance after a valid registration.
      *
-     * @param  array  $data
+     * @param array $data
+     *
      * @return User
      */
     protected function create(array $data)
     {
         return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
+            'name'     => $data['name'],
+            'email'    => $data['email'],
             'password' => bcrypt($data['password']),
         ]);
     }
